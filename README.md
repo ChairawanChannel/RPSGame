@@ -1,2 +1,5 @@
-install apk \n
+install apk
+
+
+
 app-debug-androidTest.apk
