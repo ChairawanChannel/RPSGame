@@ -2,4 +2,4 @@ install apk
 
 
 
-app-debug-androidTest.apk
+com.example.rpsgame-1.apk
