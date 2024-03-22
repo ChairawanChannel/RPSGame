@@ -7,9 +7,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.rpsgame.R;
-
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,11 +14,17 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imagePlayerChoice;
     private ImageView imageComputerChoice;
     private TextView textViewResult;
+    private TextView textViewPlayerScore;
+    private TextView textViewComputerScore;
     private Button buttonRock;
     private Button buttonPaper;
     private Button buttonScissors;
+    private Button buttonReset;
 
     private MediaPlayer popSoundPlayer;
+
+    private int playerScore = 0;
+    private int computerScore = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +34,14 @@ public class MainActivity extends AppCompatActivity {
         imagePlayerChoice = findViewById(R.id.imagePlayerChoice);
         imageComputerChoice = findViewById(R.id.imageComputerChoice);
         textViewResult = findViewById(R.id.textViewResult);
+        textViewPlayerScore = findViewById(R.id.textViewPlayerScore);
+        textViewComputerScore = findViewById(R.id.textViewComputerScore);
         buttonRock = findViewById(R.id.buttonRock);
         buttonPaper = findViewById(R.id.buttonPaper);
         buttonScissors = findViewById(R.id.buttonScissors);
+        buttonReset = findViewById(R.id.buttonReset);
 
-        // Inisialisasi MediaPlayer untuk efek suara pop
+        // Initialize MediaPlayer for pop sound effect
         popSoundPlayer = MediaPlayer.create(this, R.raw.pop);
 
         buttonRock.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
                 playPopSound();
             }
         });
+
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetScores();
+            }
+        });
     }
 
     private void playGame(String playerChoice) {
@@ -73,8 +86,17 @@ public class MainActivity extends AppCompatActivity {
         setImage(imageComputerChoice, computerChoice);
 
         String result = determineWinner(playerChoice, computerChoice);
-
         textViewResult.setText(result);
+
+        // Update scores
+        if (result.equals("Player wins!")) {
+            playerScore++;
+        } else if (result.equals("Computer wins!")) {
+            computerScore++;
+        }
+
+        textViewPlayerScore.setText("Player: " + playerScore);
+        textViewComputerScore.setText("Computer: " + computerScore);
     }
 
     private String determineWinner(String playerChoice, String computerChoice) {
@@ -106,17 +128,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Memainkan efek suara pop
+    // Play pop sound effect
     private void playPopSound() {
         if (popSoundPlayer != null) {
             popSoundPlayer.start();
         }
     }
 
+    private void resetScores() {
+        playerScore = 0;
+        computerScore = 0;
+        textViewPlayerScore.setText("Player: " + playerScore);
+        textViewComputerScore.setText("Computer: " + computerScore);
+        textViewResult.setText("");
+        imagePlayerChoice.setImageResource(R.drawable.question_mark);
+        imageComputerChoice.setImageResource(R.drawable.question_mark);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Pastikan untuk melepaskan sumber daya MediaPlayer saat aplikasi dihentikan
+        // Make sure to release MediaPlayer resources when the app is stopped
         if (popSoundPlayer != null) {
             popSoundPlayer.release();
         }
